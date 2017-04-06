@@ -7,28 +7,30 @@ angular.module('NarrowItDownApp', [])
 .directive('foundItems', FoundItemsDirective)
 .constant('ApiBasePath', "https://davids-restaurant.herokuapp.com");
 
-
 function FoundItemsDirective() {
   var ddo = {
     templateUrl: 'loader/itemsloaderindicator.template.html',
     scope: {
       found: '<',
       onRemove: '&'
-    }
+    },
   };
-
   return ddo;
 }
 
-
 NarrowItDownController.$inject = ['MenuSearchService'];
 function NarrowItDownController(MenuSearchService) {
-  console.log("Initing controller...");
+
   var narrowListCtrl = this;
 
   narrowListCtrl.searchTerm = "";
 
+  narrowListCtrl.getFoundMessage = function() {
+    return MenuSearchService.getFoundMessage();
+  };
+
   narrowListCtrl.getMatchedMenuItems = function (searchTerm) {
+    console.log("Executing search...");
     MenuSearchService.getMatchedMenuItems(searchTerm);
   };
 
@@ -36,61 +38,66 @@ function NarrowItDownController(MenuSearchService) {
     MenuSearchService.removeItem(itemIndex);
   };
 
-  // narrowListCtrl.filteredItems = function () {
-  //   console.log("In controller filterItems property, calling service to find found items...")
-  //   MenuSearchService.getFoundItems();
-  // };
-
   narrowListCtrl.filteredItems = MenuSearchService.getFoundItems();
 }
 
 MenuSearchService.$inject = ['$http', 'ApiBasePath'];
 function MenuSearchService($http, ApiBasePath) {
-  console.log("Initing MenuSearchService...");
+
   var service = this;
   var matchedMenuItems = [];
-
+  var foundMessage = "";
 
   service.removeItem = function (itemIndex) {
       matchedMenuItems.splice(itemIndex, 1);
   };
 
   service.getFoundItems = function () {
-    console.log("Calling Get method on service: Matched menu items size: " + matchedMenuItems.length);
     return matchedMenuItems;
   };
 
+  service.getFoundMessage = function() {
+    return foundMessage;
+  };
+
   service.getMatchedMenuItems = function (searchTerm) {
-    //matchedMenuItems = [];
-    console.log("Matched menu items size: " + matchedMenuItems.length);
+    if (searchTerm.length === 0) {
+      console.log("Search term is empty!!");
+      foundMessage = "Nothing found.";
+    }
+    else {
+      foundMessage = "";
+      console.log("Searching for term: " + searchTerm);
+      var promise = $http({
+        method: "GET",
+        url: (ApiBasePath + "/menu_items.json"),
+      });
 
-    console.log("Searching for term: " + searchTerm);
-    var promise = $http({
-      method: "GET",
-      url: (ApiBasePath + "/menu_items.json"),
-
-    });
-
-    promise.then(function (response) {
-      var results = response.data;
-      console.log("Filtering data.. first, setting matched items to empty..")
-      //matchedMenuItems = [];
-      for(var menuItems in results) {
-        var menuItem = results[menuItems];
-        for(var menuProperty in menuItem) {
-          var menu = menuItem[menuProperty];
-          var foundSearchTerm = menu.description.search(searchTerm.toLowerCase());
-          if (foundSearchTerm != -1) {
-            console.log("adding menu item..");
-            matchedMenuItems.push(menu);
+      promise.then(function (response) {
+        var results = response.data;
+        console.log("Filtering data.. first, setting matched items to empty..")
+        matchedMenuItems.length = 0;
+        for(var menuItems in results) {
+          var menuItem = results[menuItems];
+          for(var menuProperty in menuItem) {
+            var menu = menuItem[menuProperty];
+            var foundSearchTerm = menu.description.search(searchTerm.toLowerCase());
+            if (foundSearchTerm != -1) {
+              matchedMenuItems.push(menu);
+            }
           }
         }
-      }
-      console.log("Filtering data completed, matched: " + matchedMenuItems.length);
-    })
-    .catch(function (error) {
-      console.log("Something went terribly wrong.");
-    });
+        console.log("Filtering data completed, matched: " + matchedMenuItems.length);
+        if (matchedMenuItems.length === 0) {
+          console.log("After search... nothing found!");
+          foundMessage = "Nothing found.";
+        }
+        return matchedMenuItems;
+      })
+      .catch(function (error) {
+        console.log("Something went terribly wrong.");
+      });
+    }
   };
 }
 
