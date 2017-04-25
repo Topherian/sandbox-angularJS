@@ -9,7 +9,6 @@ MenuDataService.$inject = ['$http', 'ApiBasePath'];
 function MenuDataService($http, ApiBasePath) {
 
   var service = this;
-  var items = [];
 
   service.getAllCategories = function () {
 
@@ -20,19 +19,29 @@ function MenuDataService($http, ApiBasePath) {
       });
 
       promise.then(function (response) {
-        var results = response.data;
-        console.log("Results have returned from the REST service..")
-        console.log(results);
-        for(var category in results) {
-          var categoryItem = results[category];
-          console.log(categoryItem);
-          items.push(categoryItem);
-        }
-        return items;
+        return response.data;
       })
       .catch(function (error) {
         console.log("Something went terribly wrong.");
       });
+      return promise;
+  };
+
+  service.getItemsForCategory = function (categoryShortName) {
+
+      console.log("Fetching all items under categoryShortName: " + categoryShortName);
+      var promise = $http({
+        method: "GET",
+        url: (ApiBasePath + "/menu_items.json?category=" + categoryShortName),
+      });
+
+      promise.then(function (response) {
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log("Something went terribly wrong.");
+      });
+      return promise;
   };
 }
 
