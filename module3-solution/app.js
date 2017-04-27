@@ -97,6 +97,7 @@ function MenuSearchService($http, ApiBasePath) {
       .catch(function (error) {
         console.log("Something went terribly wrong.");
       });
+      return promise;
     }
   };
 }
