@@ -36,7 +36,7 @@ function MenuDataService($http, ApiBasePath) {
       });
 
       promise.then(function (response) {
-        return response.data;
+        return response.data.menu_items;
       })
       .catch(function (error) {
         console.log("Something went terribly wrong.");

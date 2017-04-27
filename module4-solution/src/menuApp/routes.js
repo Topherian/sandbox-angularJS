@@ -13,13 +13,11 @@ function RoutesConfig($stateProvider, $urlRouterProvider) {
   // *** Set up UI states ***
   $stateProvider
 
-  // Home page
   .state('home', {
     url: '/',
     templateUrl: 'src/menuApp/templates/home.template.html'
   })
 
-  // Categories page
   .state('categories', {
     url: '/categories',
     templateUrl: 'src/menuApp/templates/menuApp-categories.template.html',
@@ -31,13 +29,13 @@ function RoutesConfig($stateProvider, $urlRouterProvider) {
     }
   })
 
-  .state('categories.items', {
+  .state('items', {
     url: '/items/{categoryShortName}',
     templateUrl: 'src/menuApp/templates/menuApp-items.template.html',
     controller: "MenuAppItemsController as itemDetail",
     resolve: {
-      items: ['MenuDataService', function (MenuDataService) {
-        return MenuDataService.getItemsForCategory(categoryShortName);
+      items: ['MenuDataService', '$stateParams', function (MenuDataService, $stateParams) {
+        return MenuDataService.getItemsForCategory($stateParams.categoryShortName);
       }]
     }
   });
