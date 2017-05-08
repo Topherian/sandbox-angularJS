@@ -1,0 +1,59 @@
+.loading-indicator {
+    display: block;
+    width: 70px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 40%;
+    z-index: 100;
+    background-color: #FFF;
+}
+
+.loading-indicator img {
+    width: 70px;
+    background-color: #FFF;
+}
+
+.ui-view-placeholder {
+    margin-top: 60px;
+}
+
+input[type=text] {
+    background-color: #FFF;
+    color: black;
+}
+
+input[type=email] {
+    background-color: #FFF;
+    color: black;
+}
+
+
+input[type="button"]:disabled{
+    color: black;
+}
+
+input[type="button"]:enabled{
+    color: white;
+}
+
+button:enabled {
+  padding:5px 15px;
+  background:none;
+  background-color: #808080;
+  border:none;
+  border:0 none;
+  cursor:pointer;
+  border-radius: 5px;
+}
+
+button:disabled {
+  padding:5px 15px;
+  background:none;
+  background-color: #000;
+  border:none;
+  border:0 none;
+  cursor:pointer;
+  border-radius: 5px;
+}

@@ -1,0 +1,33 @@
+<div class="container">
+  <h2 id="menu-categories-title" class="text-center">My Information</h2>
+
+  <div id="info" ng-if="myInfoCtrl.userSaved">
+    First Name: {{ myInfoCtrl.firstName }} <br>
+    Last Name: {{ myInfoCtrl.lastName }} <br>
+    Address: {{ myInfoCtrl.address }} <br>
+    Email: {{ myInfoCtrl.email }} <br>
+    Phone number: {{ myInfoCtrl.phone }} <br>
+    Favorite Menu Item: {{ myInfoCtrl.favItem }} <br>
+    <div class="menu-item-tile col-md-6">
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="menu-item-photo">
+            <div>{{myInfoCtrl.itemShortName}}</div>
+            <img class="img-responsive" width="250" height="150" ng-src="{{myInfoCtrl.basePath}}/images/{{myInfoCtrl.itemShortName}}.jpg" alt="{{myInfoCtrl.itemName}}">
+          </div>
+        </div>
+        <div class="menu-item-description col-sm-7">
+          <h3 class="menu-item-title">{{myInfoCtrl.itemName}}</h3>
+          <p class="menu-item-details">{{myInfoCtrl.itemDescription}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="info" ng-if="!myInfoCtrl.userSaved">
+    Not Signed up yet!  <a ui-sref="public.signup">Sign up now!</a> <br>
+  </div>
+
+
+
+</div>
